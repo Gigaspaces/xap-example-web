@@ -7,7 +7,20 @@ if [ "${M2_HOME}" = "" ] ; then
     M2_HOME="${XAP_HOME}/tools/maven/apache-maven-3.2.5"; export M2_HOME
 fi
 
-if [ $1 = "clean" ]; then
+if [ -z "$1" ] || ([ $1 != "clean" ] && [ $1 != "compile" ] && [ $1 != "package" ] && [ $1 != "deploy" ] && [ $1 != "undeploy" ]); then
+  echo ""
+  echo "Error: Invalid input command $1 "
+  echo ""
+  echo "The available commands are:"
+  echo ""
+  echo "clean                    --> Cleans all output dirs"
+  echo "compile                  --> Builds all; don't create WAR file"
+  echo "package                  --> Builds the distribution"
+  echo "deploy                   --> Deploys the web app on the service grid"
+  echo "undeploy                 --> Undeploys the web app from the service grid"
+  echo ""
+
+elif [ $1 = "clean" ]; then
   (cd $DIR_NAME;
   ${M2_HOME}/bin/mvn clean; )
 
@@ -27,17 +40,4 @@ elif [ $1 = "undeploy" ]; then
   ${XAP_HOME}/bin/gs.sh undeploy HttpSession
   ${XAP_HOME}/bin/gs.sh undeploy mySpace
 
-
-else
-  echo ""
-  echo "Error: Invalid input command: $1 "
-  echo ""
-  echo "The available commands are:"
-  echo ""
-  echo "clean                    --> Cleans all output dirs"
-  echo "compile                  --> Builds all; don't create JARs"
-  echo "package                  --> Builds the distribution"
-  echo "deploy                   --> Deploys the web app on the service grid"
-  echo "undeploy                 --> Undeploys the web app from the service grid"
-  echo ""
 fi
